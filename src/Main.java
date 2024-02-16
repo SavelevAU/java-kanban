@@ -1,3 +1,9 @@
+import manager.TaskManager;
+import model.Epic;
+import model.Task;
+import model.SubTask;
+import model.TaskStatus;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -7,19 +13,19 @@ public class Main {
         Task task1 = new Task("SingleTask1", "description1");
         Task task2 = new Task("SingleTask2", "description2");
 
-        taskManager.saveTask(task1);
-        taskManager.saveTask(task2);
+        taskManager.createTask(task1);
+        taskManager.createTask(task2);
         System.out.println(taskManager.getAllTask());
 
-        Task epic1 = new epic("EpicTask1", "epic1 descr");
-        Task epic2 = new epic("EpicTask2", "epic2 descr");
+        Task epic1 = new Epic("EpicTask1", "epic1 descr");
+        Task epic2 = new Epic("EpicTask2", "epic2 descr");
         taskManager.saveEpic(epic1);
         taskManager.saveEpic(epic2);
 
 
-        subtask subTask1 = new subtask("SubTask1", "des1", 3);
-        subtask subTask2 = new subtask("SubTask2", "des2", 3);
-        subtask subTask3 = new subtask("SubTask3", "des3", 4);
+        SubTask subTask1 = new SubTask("SubTask1", "des1", 3);
+        SubTask subTask2 = new SubTask("SubTask2", "des2", 3);
+        SubTask subTask3 = new SubTask("SubTask3", "des3", 4);
 
         taskManager.saveSubTask(subTask1);
         taskManager.saveSubTask(subTask2);
@@ -30,21 +36,21 @@ public class Main {
         System.out.println("Все ЭПИКИ:");
         System.out.println(taskManager.getAllEpic());
 
-        task1.setTaskStatus(enum_status.DONE);
-        System.out.println(taskManager.getTaskByUin(task1.getUin()));
+        task1.setTaskStatus(TaskStatus.DONE);
+        System.out.println(taskManager.getTaskById(task1.getId()));
 
-        subTask1.setTaskStatus(enum_status.DONE);
+        subTask1.setTaskStatus(TaskStatus.DONE);
         taskManager.updatesubtask(subTask1);
 
         System.out.println("Обновили ЭПИК после обновления подзадачи:");
-        System.out.println(taskManager.getEpicByUin(subTask1.getEpicUin()));
+        System.out.println(taskManager.getEpicById(subTask1.getEpicId()));
 
         System.out.println("Удалили подзадачу из Эпика:");
-        taskManager.deleteSubTaskByUin(subTask3.getUin());
-        System.out.println(taskManager.getEpicByUin(subTask3.getEpicUin()));
+        taskManager.deleteSubTaskById(subTask3.getId());
+        System.out.println(taskManager.getEpicById(subTask3.getEpicId()));
 
         System.out.println("Удалили подзадачу из ЭПИКа  и пересчитали статус эпика:");
-        taskManager.deleteSubTaskByUin(subTask1.getUin());
-        System.out.println(taskManager.getEpicByUin(subTask2.getEpicUin()));
+        taskManager.deleteSubTaskById(subTask1.getId());
+        System.out.println(taskManager.getEpicById(subTask2.getEpicId()));
     }
 }

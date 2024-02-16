@@ -1,26 +1,28 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class epic extends Task {
-    private List<subtask> subtasks;
+public class Epic extends Task {
+    private List<SubTask> subtasks;
 
-    public epic(String epicName, String description) {
+    public Epic(String epicName, String description) {
         super(epicName, description);
         this.subtasks = new ArrayList<>();
     }
 
-    public List<subtask> getSubTasks() {
+    public List<SubTask> getSubTasks() {
         return subtasks;
     }
 
-    public void setSubTasks(List<subtask> subtasks) {
+    public void setSubTasks(List<SubTask> subtasks) {
         this.subtasks = subtasks;
     }
 
     @Override
     public String toString() {
         return "EpicTask{" +
-                "id=" + uin +
+                "id=" + Id +
                 ", name='" + taskName + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + taskStatus +

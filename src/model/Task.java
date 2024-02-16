@@ -1,23 +1,25 @@
+package model;
+
 public class Task {
     //просто задача
     protected String taskName;
     protected String description;
-    protected enum_status taskStatus;
-    protected int uin;
+    protected TaskStatus taskStatus;
+    protected int Id;
 
     public Task(String taskName, String description) {
         this.taskName = taskName;
         this.description = description;
-        this.taskStatus = enum_status.NEW;
+        this.taskStatus = TaskStatus.NEW;
     }
-    public int getUin() {
-        return uin;
+    public int getId() {
+        return Id;
     }
 
     @Override
     public String toString() {
         return "SingleTask{" +
-                "id=" + uin +
+                "id=" + Id +
                 ", name='" + taskName + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + taskStatus +
@@ -31,12 +33,12 @@ public class Task {
         return description;
     }
 
-    public enum_status getTaskStatus() {
+    public TaskStatus getTaskStatus() {
         return taskStatus;
     }
 
-    public void setUin(int uin) {
-        this.uin = uin;
+    public void setId(int Id) {
+        this.Id = Id;
     }
 
     public void setTaskName(String taskName) {
@@ -47,7 +49,7 @@ public class Task {
         this.description = description;
     }
 
-    public void setTaskStatus(enum_status taskStatus) {
+    public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
 }
