@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Task {
     //просто задача
     protected String taskName;
@@ -11,6 +13,13 @@ public class Task {
         this.taskName = taskName;
         this.description = description;
         this.taskStatus = TaskStatus.NEW;
+    }
+    public Task(int id, String taskName, String description, TaskStatus taskStatus) {
+
+        this.taskName = taskName;
+        this.description = description;
+        this.taskStatus = taskStatus;
+        this.Id = id;
     }
     public int getId() {
         return Id;
@@ -51,5 +60,16 @@ public class Task {
 
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Id == task.Id && taskName.equals(task.taskName) && description.equals(task.description) && taskStatus == task.taskStatus;
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(Id, taskName, description, taskStatus);
     }
 }

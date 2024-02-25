@@ -1,57 +1,23 @@
 package manager;
 
-import model.*;
+import model.Epic;
+import model.SubTask;
+import model.Task;
+import model.TaskStatus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class TaskManager {
-    final private HashMap<Integer, Task> tasks;
-    final private TaskIdGenerator taskIdGenerator;
+public interface TaskManager {
+    void createTask(Task Task);
 
-    public TaskManager() {
-        this.tasks = new HashMap<>();
-        this.taskIdGenerator = new TaskIdGenerator();
-    }
+    Task getTaskById(Integer taskId);
 
-    public void createTask(Task Task) {
-        Task.setId(taskIdGenerator.getNewId());
-        tasks.put(Task.getId(), Task);
-    }
+    void saveSubTask(SubTask subtask);
 
-    public Task getTaskById(Integer taskId) {
-        if (!tasks.containsKey(taskId)) {
-            return null;
-        }
-        return tasks.get(taskId);
-    }
+    void updatesubtask(SubTask subtask);
 
-    public void saveSubTask(SubTask subtask) {
-        subtask.setId(taskIdGenerator.getNewId());
-        tasks.put(subtask.getId(), subtask);
-
-        int epicId = subtask.getEpicId();
-        Epic epic = (Epic) tasks.get(epicId);
-
-        List<SubTask> list = epic.getSubTasks();
-
-        list.add(subtask);
-
-        epic.setSubTasks(list);
-        updateepic(epic);
-    }
-
-    public void updatesubtask(SubTask subtask) {
-        tasks.put(subtask.getId(), subtask);
-
-        int epicId = subtask.getEpicId();
-        Epic epic = (Epic) tasks.get(epicId);
-
-        calculateEpicStatus(epic);
-    }
-
-    private void calculateEpicStatus(Epic epic) {
+    default void calculateEpicStatus(Epic epic) {
 
         List<TaskStatus> statuses = new ArrayList<>();
 
@@ -77,80 +43,29 @@ public class TaskManager {
         updateepic(epic);
     }
 
-    public void deleteSubTaskById(Integer subTaskId) {
-        if (tasks.containsKey(subTaskId)) {
-            SubTask subtask = (SubTask) tasks.get(subTaskId);
-            int epicId = subtask.getEpicId();
+    void deleteSubTaskById(Integer subTaskId);
 
-            Epic epic = (Epic) tasks.get(epicId);
+    void saveEpic(Task epic);
 
-            tasks.remove(subTaskId);
+    void updateepic(Epic epic);
 
-            List<SubTask> list = epic.getSubTasks();
-            list.remove(subtask);
+    Task getEpicById(Integer epicId);
 
-            epic.setSubTasks(list);
-            calculateEpicStatus(epic);
+    ArrayList<Task> getTaskById(List<Integer> taskIds);
 
-        } else {
-            System.out.printf("Сабтаски с id = %s нет в базе", subTaskId);
-        }
+    List<Task> getAllTask();
 
-    }
+    List<Task> getAllSubtaskTask();
 
-    public void saveEpic(Task epic) {
-        epic.setId(taskIdGenerator.getNewId());
-        tasks.put(epic.getId(), epic);
-    }
+    List<Task> getAllEpic();
 
-    public void updateepic(Epic epic) {
-        tasks.put(epic.getId(), epic);
-    }
-
-    public Task getEpicById(Integer epicId) {
-        if (!tasks.containsKey(epicId)) {
-            return null;
-        }
-        return tasks.get(epicId);
-    }
-
-    public List<Task> getAllTask() {
-        List<Task> allTasks = new ArrayList<>();
-
-        for (Task value : tasks.values()) {
-            if (value instanceof Task) {
-                allTasks.add(value);
-            }
-        }
-        return allTasks;
-    }
-
-    public List<Task> getAllSubtaskTask() {
-        List<Task> allTasks = new ArrayList<>();
-
-        for (Task value : tasks.values()) {
-            if (value instanceof SubTask) {
-                allTasks.add(value);
-            }
-        }
-        return allTasks;
-    }
-
-    public List<Task> getAllEpic() {
-        List<Task> allTasks = new ArrayList<>();
-
-        for (Task value : tasks.values()) {
-            if (value instanceof Epic) {
-                allTasks.add(value);
-            }
-        }
-        return allTasks;
-    }
+    Task getSubTaskById(Integer taskId);
 
     @Override
-    public String toString() {
-        return "taskManager.TaskManager{" +
-                "tasks=" + tasks +
-                '}';
-    }
+    String toString();
+
+    public List<Task> getHistory();
+
+    public void saveTask(Task Task);
+    public void updateTask(Task Task);
 }
