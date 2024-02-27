@@ -6,12 +6,11 @@ import model.Task;
 import model.TaskStatus;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public interface TaskManager {
     void createTask(Task Task);
-
-    Task getTaskById(Integer taskId);
 
     void saveSubTask(SubTask subtask);
 
@@ -64,8 +63,9 @@ public interface TaskManager {
     @Override
     String toString();
 
-    public List<Task> getHistory();
-
     public void saveTask(Task Task);
     public void updateTask(Task Task);
+    public Task getSingleTaskById(Integer taskId);
+
+       public List<Task> getHistory();;
 }//

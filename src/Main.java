@@ -10,10 +10,10 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+        TaskManager inMemoryTaskManager = Managers.getDefault();
 
-        Task task1 = new Task("SingleTask1", "description1");
-        Task task2 = new Task("SingleTask2", "description2");
+        Task task1 = new Task("Task1", "description1");
+        Task task2 = new Task("Task2", "description2");
 
         inMemoryTaskManager.createTask(task1);
         inMemoryTaskManager.createTask(task2);
@@ -50,15 +50,15 @@ public class Main {
 
         System.out.println("Удалили подзадачу из ЭПИКа  и пересчитали статус эпика:");
         inMemoryTaskManager.deleteSubTaskById(subTask1.getId());
-        inMemoryTaskManager.getTaskById(1);
-        inMemoryTaskManager.getTaskById(1);
+        inMemoryTaskManager.getSingleTaskById(1);
+        inMemoryTaskManager.getSingleTaskById(1);
         inMemoryTaskManager.getEpicById(3);
         inMemoryTaskManager.getEpicById(4);
         inMemoryTaskManager.getSubTaskById(6);
 
-        printAllTasks(inMemoryTaskManager);
+        printAllTasks((InMemoryTaskManager) inMemoryTaskManager);
     }
-    private static void printAllTasks(TaskManager manager) {
+    private static void printAllTasks(InMemoryTaskManager manager) {
 
         System.out.println("История:");
         for (Task task : manager.getHistory()) {

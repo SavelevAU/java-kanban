@@ -25,11 +25,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTaskById(Integer taskId) {
-        if (!tasks.containsKey(taskId)) {
-            return null;
+    public ArrayList<Task> getTaskById(List<Integer> taskIds) {
+        ArrayList<Task> tasks = new ArrayList<>();
+        for (int id : taskIds) {
+            tasks.add(this.tasks.get(id));
         }
-        return tasks.get(taskId);
+        return tasks;
     }
     @Override
     public Task getSubTaskById(Integer taskId) {
@@ -109,12 +110,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (!tasks.containsKey(epicId)) {
             return null;
         }
+        historyManager.add(tasks.get(epicId));
         return tasks.get(epicId);
-    }
-
-    @Override
-    public ArrayList<Task> getTaskById(List<Integer> taskIds) {
-        return null;
     }
 
     @Override
@@ -173,4 +170,12 @@ public class InMemoryTaskManager implements TaskManager {
 
         tasks.put(Task.getId(), Task);
     }//
+    @Override
+    public Task getSingleTaskById(Integer taskId) {
+        if (!tasks.containsKey(taskId)) {
+            return null;
+        }
+        historyManager.add(tasks.get(taskId));
+        return tasks.get(taskId);
+    }
 }
