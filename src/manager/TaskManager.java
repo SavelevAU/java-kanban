@@ -50,7 +50,7 @@ public interface TaskManager {
 
     Task getEpicById(Integer epicId);
 
-    ArrayList<Task> getTaskById(List<Integer> taskIds);
+    Task getTaskById(Integer taskId);
 
     List<Task> getAllTask();
 
@@ -68,4 +68,6 @@ public interface TaskManager {
     public Task getSingleTaskById(Integer taskId);
 
        public List<Task> getHistory();;
+
+    HistoryManager getHistoryManager();
 }//

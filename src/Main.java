@@ -50,13 +50,21 @@ public class Main {
 
         System.out.println("Удалили подзадачу из ЭПИКа  и пересчитали статус эпика:");
         inMemoryTaskManager.deleteSubTaskById(subTask1.getId());
-        inMemoryTaskManager.getSingleTaskById(1);
-        inMemoryTaskManager.getSingleTaskById(1);
+        inMemoryTaskManager.getTaskById(1);
+        inMemoryTaskManager.getTaskById(1);
         inMemoryTaskManager.getEpicById(3);
         inMemoryTaskManager.getEpicById(4);
         inMemoryTaskManager.getSubTaskById(6);
 
         printAllTasks((InMemoryTaskManager) inMemoryTaskManager);
+
+        for (int i = 1; i < 20; i++) {
+            inMemoryTaskManager.createTask(new Task("name" + i, "desc" + i));
+        }
+        for (int i = 5; i < 18; i++) {
+            inMemoryTaskManager.getTaskById(i);
+        }
+        var e = inMemoryTaskManager.getHistory();
     }
     private static void printAllTasks(InMemoryTaskManager manager) {
 
