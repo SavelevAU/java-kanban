@@ -26,7 +26,7 @@ class InMemoryTaskManagerTest {
 
         Task task1 = new Task("Task1", "description1");
         inMemoryTaskManager.saveTask(task1);
-        Task task = inMemoryTaskManager.getSingleTaskById(1);
+        Task task = inMemoryTaskManager.getTaskById(1);
         Assertions.assertEquals(1, task.getId());
     }
 
@@ -34,8 +34,8 @@ class InMemoryTaskManagerTest {
     void shouldSavePreviousVersionOfTaskAndData() {
         Task task1 = new Task("Task1", "description1");
         inMemoryTaskManager.saveTask(task1);
-        inMemoryTaskManager.getSingleTaskById(1);
-        inMemoryTaskManager.getSingleTaskById(1);
+        inMemoryTaskManager.getTaskById(1);
+        inMemoryTaskManager.getTaskById(1);
         Assertions.assertEquals(2, inMemoryTaskManager.getHistory().size());
     }
     //убедитесь, что утилитарный класс всегда возвращает проинициализированные и готовые к работе экземпляры менеджеров
@@ -55,7 +55,7 @@ class InMemoryTaskManagerTest {
         inMemoryTaskManager.saveTask(task1);
         Task task2 = new Epic("Epic1", "description1");
         inMemoryTaskManager.saveEpic(task2);
-        Task singTask = inMemoryTaskManager.getSingleTaskById(task1.getId());
+        Task singTask = inMemoryTaskManager.getTaskById(task1.getId());
         Assertions.assertNotNull(singTask);
         Task epicTask = inMemoryTaskManager.getEpicById(task2.getId());
         Assertions.assertNotNull(epicTask);
