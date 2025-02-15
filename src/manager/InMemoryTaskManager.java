@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final  HashMap<Integer, Task> tasks;
+    private final HashMap<Integer, Task> tasks;
 
-    private final  TaskIdGenerator taskIdGenerator;
+    private final TaskIdGenerator taskIdGenerator;
 
-    private final  HistoryManager historyManager;
+    private final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -33,6 +33,7 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.add(tasks.get(taskId));
         return tasks.get(taskId);
     }
+
     @Override
     public Task getSubTaskById(Integer taskId) {
         if (!tasks.containsKey(taskId)) {
@@ -42,6 +43,7 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.add(tasks.get(taskId));
         return tasks.get(taskId);
     }
+
     @Override
     public void saveSubTask(SubTask subtask) {
         subtask.setId(taskIdGenerator.getNewId());
@@ -157,20 +159,24 @@ public class InMemoryTaskManager implements TaskManager {
                 "tasks=" + tasks +
                 '}';
     }
+
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }
+
     @Override
     public void saveTask(Task Task) {
         Task.setId(taskIdGenerator.getNewId());
         tasks.put(Task.getId(), Task);
     }
+
     @Override
     public void updateTask(Task Task) {
 
         tasks.put(Task.getId(), Task);
     }//
+
     @Override
     public Task getSingleTaskById(Integer taskId) {
         if (!tasks.containsKey(taskId)) {
@@ -178,5 +184,10 @@ public class InMemoryTaskManager implements TaskManager {
         }
         historyManager.add(tasks.get(taskId));
         return tasks.get(taskId);
+    }
+
+    @Override
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
 }

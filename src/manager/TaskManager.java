@@ -67,5 +67,6 @@ public interface TaskManager {
     public void updateTask(Task Task);
     public Task getSingleTaskById(Integer taskId);
 
-       public List<Task> getHistory();;
+    public List<Task> getHistory();
+    public HistoryManager getHistoryManager();
 }//
