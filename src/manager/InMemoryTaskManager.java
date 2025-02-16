@@ -57,11 +57,11 @@ public class InMemoryTaskManager implements TaskManager {
         list.add(subtask);
 
         epic.setSubTasks(list);
-        updateepic(epic);
+        updateEpic(epic);
     }
 
     @Override
-    public void updatesubtask(SubTask subtask) {
+    public void updateSubTask(SubTask subtask) {
         tasks.put(subtask.getId(), subtask);
 
         int epicId = subtask.getEpicId();
@@ -72,7 +72,28 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void calculateEpicStatus(Epic epic) {
-        TaskManager.super.calculateEpicStatus(epic);
+        List<TaskStatus> statuses = new ArrayList<>();
+
+        for (SubTask task : epic.getSubTasks()) {
+            statuses.add(task.getTaskStatus());
+        }
+
+        if (statuses.isEmpty()) {
+            epic.setTaskStatus(TaskStatus.NEW);
+        }
+
+
+        if (statuses.contains(TaskStatus.NEW) &&
+                !statuses.contains(TaskStatus.IN_PROGRESS) && !statuses.contains(TaskStatus.DONE)) {
+            epic.setTaskStatus(TaskStatus.NEW);
+        } else if (statuses.contains(TaskStatus.DONE) &&
+                !statuses.contains(TaskStatus.NEW) && !statuses.contains(TaskStatus.IN_PROGRESS)) {
+            epic.setTaskStatus(TaskStatus.DONE);
+        } else {
+            epic.setTaskStatus(TaskStatus.IN_PROGRESS);
+        }
+
+        updateEpic(epic);
     }
 
     @Override
@@ -104,7 +125,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateepic(Epic epic) {
+    public void updateEpic(Epic epic) {
         tasks.put(epic.getId(), epic);
     }
 

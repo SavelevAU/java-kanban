@@ -41,7 +41,7 @@ public class Main {
         task1.setTaskStatus(TaskStatus.DONE);
 
         subTask1.setTaskStatus(TaskStatus.DONE);
-        inMemoryTaskManager.updatesubtask(subTask1);
+        inMemoryTaskManager.updateSubTask(subTask1);
 
         System.out.println("Обновили ЭПИК после обновления подзадачи:");
 

@@ -25,11 +25,11 @@ public class InMemoryHistoryManager implements HistoryManager{
 
     private ArrayList<Task> getTasks(){
         ArrayList<Task> tasks = new ArrayList<>();
-        Node node = first;
+        Node node = last;
         if(node != null) {
             tasks.add(node.task);
-            while (node.next != null) {
-                node = node.next;
+            while (node.prev != null) {
+                node = node.prev;
                 tasks.add(node.task);
             }
         }
@@ -43,7 +43,6 @@ public class InMemoryHistoryManager implements HistoryManager{
 
     private final LinkedList<Task> historyList = new LinkedList<>();
     private static final int MAX_SIZE_OF_HISTORY_LIST = 10;
-    //
     @Override
     public void add(Task task) {
         remove(task.getId());
@@ -82,7 +81,6 @@ public class InMemoryHistoryManager implements HistoryManager{
 
     @Override
     public List<Task> getHistory() {
-//        return historyList;
         return getTasks();
     }
 }
