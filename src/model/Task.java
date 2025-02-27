@@ -50,6 +50,10 @@ public class Task {
         this.Id = Id;
     }
 
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
@@ -72,4 +76,6 @@ public class Task {
     public int hashCode() {
         return Objects.hash(Id, taskName, description, taskStatus);
     }
+
+
 }

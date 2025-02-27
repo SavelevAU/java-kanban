@@ -1,8 +1,6 @@
 package tests;
+import manager.*;
 import org.junit.jupiter.api.BeforeEach;
-import manager.HistoryManager;
-import manager.Managers;
-import manager.TaskManager;
 import model.Epic;
 import model.SubTask;
 import model.Task;
@@ -10,9 +8,12 @@ import model.TaskStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class InMemoryTaskManagerTest {
     Managers managers;
@@ -48,10 +49,10 @@ class InMemoryTaskManagerTest {
     @Test
     void TheUtilityClassReturnsInitializedInstancesManagers() {
         TaskManager taskManager = Managers.getDefault();
-        Assertions.assertNotNull(taskManager);
+        assertNotNull(taskManager);
 
         HistoryManager historyManager = Managers.getDefaultHistory();
-        Assertions.assertNotNull(historyManager);
+        assertNotNull(historyManager);
 
     }
 
@@ -62,9 +63,9 @@ class InMemoryTaskManagerTest {
         Task task2 = new Epic("Epic1", "description1");
         inMemoryTaskManager.saveEpic(task2);
         Task singTask = inMemoryTaskManager.getTaskById(task1.getId());
-        Assertions.assertNotNull(singTask);
+        assertNotNull(singTask);
         Task epicTask = inMemoryTaskManager.getEpicById(task2.getId());
-        Assertions.assertNotNull(epicTask);
+        assertNotNull(epicTask);
         Assertions.assertNotEquals(singTask, epicTask);
     }
 //
@@ -105,5 +106,40 @@ class InMemoryTaskManagerTest {
         historyManager.remove(task3.getId());
         final List<Task> historyAfterRemoveAll = historyManager.getHistory();
         assertEquals(0, historyAfterRemoveAll.size(), "Количество элементов в истории не равно 0");
+    }
+
+    @Test
+    void loadFromEmptyFile() throws IOException, ManagerLoadException {
+        File file = File.createTempFile("testEmptyFile-", ".csv");
+        FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
+        assertNotNull(taskManager, "taskManager is null!");
+        assertEquals(taskManager.getAllTask().size(), 0, "Количество задач не равно 0");
+        assertEquals(taskManager.getHistory().size(), 0, "Количество задач в истории не равно 0");
+    }
+
+    @Test
+    void saveToEmptyFile() throws IOException, ManagerLoadException {
+        File file = File.createTempFile("testEmptyFile-", ".csv");
+        FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
+        taskManager.save();
+        FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
+        assertNotNull(taskManagerFromFile, "taskManagerFromFile is null!");
+        assertEquals(taskManagerFromFile.getAllTask().size(), 0, "Количество задач не равно 0");
+        assertEquals(taskManagerFromFile.getHistory().size(), 0, "Количество задач в истории не равно 0");
+    }
+
+    @Test
+    void saveLoadFile() throws IOException, ManagerLoadException {
+        File file = File.createTempFile("testEmptyFile-", ".csv");
+        FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
+        Task task = new Task("Test saveLoadFile", "Test saveLoadFile description");
+        taskManager.createTask(task);
+        //вызовем получение задачи для обновления истории
+        taskManager.getTaskById(task.getId());
+
+        FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
+        assertNotNull(taskManagerFromFile, "taskManagerFromFile is null!");
+        assertEquals(taskManagerFromFile.getAllTask().size(), taskManager.getAllTask().size(), "Количество задач в менеджерах не равно");
+        assertEquals(taskManagerFromFile.getHistory().size(), taskManagerFromFile.getHistory().size(), "Количество задач в истории менеджеров не равно");
     }
 }

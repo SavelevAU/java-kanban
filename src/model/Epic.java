@@ -19,6 +19,8 @@ public class Epic extends Task {
         this.subtasks = subtasks;
     }
 
+    public void addSubtaskToEpic(SubTask subtask) { subtasks.add(subtask); }
+
     @Override
     public String toString() {
         return "EpicTask{" +
@@ -28,6 +30,11 @@ public class Epic extends Task {
                 ", status=" + taskStatus +
                 ", subTasks=" + subtasks +
                 '}';
+    }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
     }
 }
 

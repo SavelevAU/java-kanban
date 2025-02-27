@@ -7,14 +7,24 @@ import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasks;
+    protected final HashMap<Integer, Task> tasks;
+
+    protected final HashMap<Integer, Epic> epics;
+
+    protected final HashMap<Integer, SubTask> subtasks;
 
     private final TaskIdGenerator taskIdGenerator;
 
     private final HistoryManager historyManager;
 
+    protected int currentId;
+
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
+        this.epics = new HashMap<>();
+        this.subtasks = new HashMap<>();
+
+        currentId = 0;
         this.taskIdGenerator = new TaskIdGenerator();
         this.historyManager = Managers.getDefaultHistory();
     }
