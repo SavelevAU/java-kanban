@@ -80,8 +80,7 @@ public class InMemoryTaskManager implements TaskManager {
         calculateEpicStatus(epic);
     }
 
-    @Override
-    public void calculateEpicStatus(Epic epic) {
+    private void calculateEpicStatus(Epic epic) {
         List<TaskStatus> statuses = new ArrayList<>();
 
         for (SubTask task : epic.getSubTasks()) {
@@ -184,7 +183,6 @@ public class InMemoryTaskManager implements TaskManager {
         return allTasks;
     }
 
-    @Override
     public String toString() {
         return "taskManager.TaskManager{" +
                 "tasks=" + tasks +
@@ -194,12 +192,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
-    }
-
-    @Override
-    public void saveTask(Task Task) {
-        Task.setId(taskIdGenerator.getNewId());
-        tasks.put(Task.getId(), Task);
     }
 
     @Override
@@ -215,10 +207,5 @@ public class InMemoryTaskManager implements TaskManager {
         }
         historyManager.add(tasks.get(taskId));
         return tasks.get(taskId);
-    }
-
-    @Override
-    public HistoryManager getHistoryManager() {
-        return historyManager;
     }
 }

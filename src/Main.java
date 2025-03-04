@@ -1,16 +1,17 @@
-import manager.Managers;
-import manager.InMemoryTaskManager;
-import manager.TaskManager;
+import manager.*;
 import model.Epic;
 import model.Task;
 import model.SubTask;
 import model.TaskStatus;
+
+import java.io.File;
 
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
         TaskManager inMemoryTaskManager = Managers.getDefault();
+        TaskManager inMemoryTaskManagerfromfile = Managers.getDefaultFormFile();
 
         Task task1 = new Task("Task1", "description1");
         Task task2 = new Task("Task2", "description2");
@@ -65,6 +66,25 @@ public class Main {
             inMemoryTaskManager.getTaskById(i);
         }
         var e = inMemoryTaskManager.getHistory();
+
+//            FileBackedTaskManager fileManager = new FileBackedTaskManager(new File("saveTasks2.csv"));
+//            fileManager.createTask(new Task("task1", "Купить автомобиль"));
+//            fileManager.createTask(new Epic("new Epic1", "Новый Эпик"));
+//            fileManager.createTask(new SubTask("New Subtask", "Подзадача", 2));
+//            fileManager.createTask(new SubTask("New Subtask2", "Подзадача2", 2));
+//            System.out.println(fileManager.getAllTask());
+//            System.out.println(fileManager.getAllEpic());
+//            System.out.println(fileManager.getAllSubtaskTask());
+//
+//
+//            System.out.println("\n\n" + "new" + "\n\n");
+//
+//            FileBackedTaskManager fileBackedTasksManager = FileBackedTaskManager.loadFromFile(new File("saveTasks2.csv"));
+//            System.out.println(fileBackedTasksManager.getAllTask());
+//            System.out.println(fileBackedTasksManager.getAllEpic());
+//            System.out.println(fileBackedTasksManager.getAllSubtaskTask());
+
+
     }
     private static void printAllTasks(InMemoryTaskManager manager) {
 

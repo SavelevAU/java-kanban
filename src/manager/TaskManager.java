@@ -16,7 +16,6 @@ public interface TaskManager {
 
     void updateSubTask(SubTask subtask);
 
-    void calculateEpicStatus(Epic epic);
 
     void deleteSubTaskById(Integer subTaskId);
 
@@ -36,13 +35,8 @@ public interface TaskManager {
 
     Task getSubTaskById(Integer taskId);
 
-    @Override
-    String toString();
-
-    public void saveTask(Task Task);
-    public void updateTask(Task Task);
-    public Task getSingleTaskById(Integer taskId);
+    void updateTask(Task Task);
+    Task getSingleTaskById(Integer taskId);
 
     public List<Task> getHistory();
-    public HistoryManager getHistoryManager();
 }//

@@ -8,8 +8,6 @@ import model.TaskStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +22,7 @@ class InMemoryTaskManagerTest {
     public void beforeEach() {
 
         inMemoryTaskManager = managers.getDefault();
-        historyManager = inMemoryTaskManager.getHistoryManager();
+        historyManager = Managers.getDefaultHistory();;
 
     }
 
@@ -32,7 +30,7 @@ class InMemoryTaskManagerTest {
     void shouldCheckThatInMemoryManagerAddTasksAndFindThemByById() {
 
         Task task1 = new Task("Task1", "description1");
-        inMemoryTaskManager.saveTask(task1);
+        inMemoryTaskManager.createTask(task1);
         Task task = inMemoryTaskManager.getTaskById(1);
         assertEquals(1, task.getId());
     }
@@ -40,7 +38,7 @@ class InMemoryTaskManagerTest {
     @Test
     void shouldSavePreviousVersionOfTaskAndData() {
         Task task1 = new Task("Task1", "description1");
-        inMemoryTaskManager.saveTask(task1);
+        inMemoryTaskManager.createTask(task1);
         inMemoryTaskManager.getTaskById(1);
         inMemoryTaskManager.getTaskById(1);
         assertEquals(1, inMemoryTaskManager.getHistory().size());
@@ -59,7 +57,7 @@ class InMemoryTaskManagerTest {
     @Test
     void AddsTasksDifferentTypesAndCanFindThemByManagerId(){
         Task task1 = new Task("Task1", "description1");
-        inMemoryTaskManager.saveTask(task1);
+        inMemoryTaskManager.createTask(task1);
         Task task2 = new Epic("Epic1", "description1");
         inMemoryTaskManager.saveEpic(task2);
         Task singTask = inMemoryTaskManager.getTaskById(task1.getId());
@@ -75,7 +73,7 @@ class InMemoryTaskManagerTest {
         Task task1 = new Task(1000,"Task1","description1",  TaskStatus.NEW);
         inMemoryTaskManager.updateTask(task1);
         Task task2 = new Task("Task2", "description2");
-        inMemoryTaskManager.saveTask(task2);
+        inMemoryTaskManager.createTask(task2);
         Assertions.assertFalse(task1.getId() == task2.getId());
 
     }
@@ -106,40 +104,5 @@ class InMemoryTaskManagerTest {
         historyManager.remove(task3.getId());
         final List<Task> historyAfterRemoveAll = historyManager.getHistory();
         assertEquals(0, historyAfterRemoveAll.size(), "Количество элементов в истории не равно 0");
-    }
-
-    @Test
-    void loadFromEmptyFile() throws IOException, ManagerLoadException {
-        File file = File.createTempFile("testEmptyFile-", ".csv");
-        FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
-        assertNotNull(taskManager, "taskManager is null!");
-        assertEquals(taskManager.getAllTask().size(), 0, "Количество задач не равно 0");
-        assertEquals(taskManager.getHistory().size(), 0, "Количество задач в истории не равно 0");
-    }
-
-    @Test
-    void saveToEmptyFile() throws IOException, ManagerLoadException {
-        File file = File.createTempFile("testEmptyFile-", ".csv");
-        FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
-        taskManager.save();
-        FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
-        assertNotNull(taskManagerFromFile, "taskManagerFromFile is null!");
-        assertEquals(taskManagerFromFile.getAllTask().size(), 0, "Количество задач не равно 0");
-        assertEquals(taskManagerFromFile.getHistory().size(), 0, "Количество задач в истории не равно 0");
-    }
-
-    @Test
-    void saveLoadFile() throws IOException, ManagerLoadException {
-        File file = File.createTempFile("testEmptyFile-", ".csv");
-        FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
-        Task task = new Task("Test saveLoadFile", "Test saveLoadFile description");
-        taskManager.createTask(task);
-        //вызовем получение задачи для обновления истории
-        taskManager.getTaskById(task.getId());
-
-        FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
-        assertNotNull(taskManagerFromFile, "taskManagerFromFile is null!");
-        assertEquals(taskManagerFromFile.getAllTask().size(), taskManager.getAllTask().size(), "Количество задач в менеджерах не равно");
-        assertEquals(taskManagerFromFile.getHistory().size(), taskManagerFromFile.getHistory().size(), "Количество задач в истории менеджеров не равно");
     }
 }

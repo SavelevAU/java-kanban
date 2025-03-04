@@ -9,7 +9,15 @@ public class Epic extends Task {
     public Epic(String epicName, String description) {
         super(epicName, description);
         this.subtasks = new ArrayList<>();
+        this.taskType = TaskType.EPIC;
     }
+
+    public Epic(String epicName, String description, int id) {
+        super(epicName, description, id);
+        this.subtasks = new ArrayList<>();
+        this.taskType = TaskType.EPIC;
+    }
+
 
     public List<SubTask> getSubTasks() {
         return subtasks;
@@ -34,7 +42,7 @@ public class Epic extends Task {
 
     @Override
     public TaskType getType() {
-        return TaskType.EPIC;
+        return taskType;
     }
 }
 

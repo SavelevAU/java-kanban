@@ -1,6 +1,6 @@
 package manager;
 
-public class ManagerLoadException extends Throwable {
+public class ManagerLoadException extends RuntimeException {
     public ManagerLoadException(final String message, final Throwable cause) {
         super(message, cause);
     }
