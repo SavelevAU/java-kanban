@@ -1,16 +1,17 @@
-import manager.Managers;
-import manager.InMemoryTaskManager;
-import manager.TaskManager;
+import manager.*;
 import model.Epic;
 import model.Task;
 import model.SubTask;
 import model.TaskStatus;
+
+import java.io.File;
 
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
         TaskManager inMemoryTaskManager = Managers.getDefault();
+        TaskManager inMemoryTaskManagerfromfile = Managers.getDefaultFormFile();
 
         Task task1 = new Task("Task1", "description1");
         Task task2 = new Task("Task2", "description2");
@@ -41,7 +42,7 @@ public class Main {
         task1.setTaskStatus(TaskStatus.DONE);
 
         subTask1.setTaskStatus(TaskStatus.DONE);
-        inMemoryTaskManager.updatesubtask(subTask1);
+        inMemoryTaskManager.updateSubTask(subTask1);
 
         System.out.println("Обновили ЭПИК после обновления подзадачи:");
 
@@ -65,6 +66,10 @@ public class Main {
             inMemoryTaskManager.getTaskById(i);
         }
         var e = inMemoryTaskManager.getHistory();
+
+
+
+
     }
     private static void printAllTasks(InMemoryTaskManager manager) {
 
