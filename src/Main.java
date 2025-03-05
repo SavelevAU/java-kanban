@@ -67,22 +67,7 @@ public class Main {
         }
         var e = inMemoryTaskManager.getHistory();
 
-//            FileBackedTaskManager fileManager = new FileBackedTaskManager(new File("saveTasks2.csv"));
-//            fileManager.createTask(new Task("task1", "Купить автомобиль"));
-//            fileManager.createTask(new Epic("new Epic1", "Новый Эпик"));
-//            fileManager.createTask(new SubTask("New Subtask", "Подзадача", 2));
-//            fileManager.createTask(new SubTask("New Subtask2", "Подзадача2", 2));
-//            System.out.println(fileManager.getAllTask());
-//            System.out.println(fileManager.getAllEpic());
-//            System.out.println(fileManager.getAllSubtaskTask());
-//
-//
-//            System.out.println("\n\n" + "new" + "\n\n");
-//
-//            FileBackedTaskManager fileBackedTasksManager = FileBackedTaskManager.loadFromFile(new File("saveTasks2.csv"));
-//            System.out.println(fileBackedTasksManager.getAllTask());
-//            System.out.println(fileBackedTasksManager.getAllEpic());
-//            System.out.println(fileBackedTasksManager.getAllSubtaskTask());
+
 
 
     }

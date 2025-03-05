@@ -77,6 +77,10 @@ public class InMemoryHistoryManager implements HistoryManager{
                 }
             }
         }
+        if (first == null) {
+            last = null;
+        }
+
     }
 
     @Override

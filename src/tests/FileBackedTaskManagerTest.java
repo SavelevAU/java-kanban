@@ -38,17 +38,6 @@ class FileBackedTaskManagerTest {
         assertEquals(taskManager.getHistory().size(), 0, "Количество задач в истории не равно 0");
     }
 
- //   @Test
-//    void saveToEmptyFile() throws IOException, ManagerLoadException {
-//        File file = File.createTempFile("testEmptyFile-", ".csv");
-//        FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
- //       taskManager.save();
-//        FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
-//        assertNotNull(taskManagerFromFile, "taskManagerFromFile is null!");
-//        assertEquals(taskManagerFromFile.getAllTask().size(), 0, "Количество задач не равно 0");
-//        assertEquals(taskManagerFromFile.getHistory().size(), 0, "Количество задач в истории не равно 0");
-//    }
-
     @Test
     void saveLoadFile() throws IOException, ManagerLoadException {
         File file = File.createTempFile("testEmptyFile-", ".csv");

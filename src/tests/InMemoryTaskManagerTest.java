@@ -93,8 +93,8 @@ class InMemoryTaskManagerTest {
         historyManager.remove(task2.getId());
         final List<Task> history = historyManager.getHistory();
         assertEquals(2, history.size(), "Количество элементов в истории не равно 2");
-        assertEquals(task1, history.get(0), "Первый элемент истории определен неверно");
-        assertEquals(task3, history.get(1), "Последний элемент истории определен неверно");
+        assertEquals(task3, history.get(0), "Первый элемент истории определен неверно");
+        assertEquals(task1, history.get(1), "Последний элемент истории определен неверно");
 
         historyManager.remove(task1.getId());
         final List<Task> historyAfterRemoveFirst = historyManager.getHistory();

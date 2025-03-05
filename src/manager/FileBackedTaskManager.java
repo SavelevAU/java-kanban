@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import manager.CSVFormat;
+
 
 public class FileBackedTaskManager extends  InMemoryTaskManager {
     private final File file;
@@ -90,25 +90,6 @@ public class FileBackedTaskManager extends  InMemoryTaskManager {
         return task;
     }
 
-//    void main(String[] args) throws ManagerLoadException {
-//        FileBackedTaskManager fileManager = new FileBackedTaskManager(new File("saveTasks2.csv"));
-//        fileManager.createTask(new Task("task1", "Купить автомобиль"));
-//        fileManager.createTask(new Epic("new Epic1", "Новый Эпик"));
-//        fileManager.createTask(new SubTask("New Subtask", "Подзадача", 2));
-//        fileManager.createTask(new SubTask("New Subtask2", "Подзадача2", 2));
-//        System.out.println(fileManager.getAllTask());
-//        System.out.println(fileManager.getAllEpic());
-//        System.out.println(fileManager.getAllSubtaskTask());
-//
-//
-//        System.out.println("\n\n" + "new" + "\n\n");
-//
-//        FileBackedTaskManager fileBackedTasksManager = loadFromFile(new File("saveTasks2.csv"));
-//        System.out.println(fileBackedTasksManager.getAllTask());
-//        System.out.println(fileBackedTasksManager.getAllEpic());
-//        System.out.println(fileBackedTasksManager.getAllSubtaskTask());
-//    }
-
     public static FileBackedTaskManager loadFromFile(File file) throws ManagerLoadException {
         final FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
         try {
@@ -187,12 +168,7 @@ public class FileBackedTaskManager extends  InMemoryTaskManager {
 
                 writer.write(CSVFormat.toString(task) + "\n");
             }
-//            for (Task epic : getAllEpic()) {
-//                writer.write(CSVFormat.toString(epic) + "\n");
-//            }
-//            for (Task subtask : getAllSubtaskTask()) {
-//                writer.write(CSVFormat.toString(subtask) + "\n");
-//            }
+
             writer.write("\n");
             for (Task task : getHistory()) {
                 writer.write(task.getId() + ",");
