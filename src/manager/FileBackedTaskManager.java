@@ -13,12 +13,8 @@ public class FileBackedTaskManager extends  InMemoryTaskManager {
     private final File file;
 
     public FileBackedTaskManager(File file) {
-
         this.file = file;
     }
-
-
-
 
     @Override
     public void createTask(Task Task) {
@@ -128,16 +124,20 @@ public class FileBackedTaskManager extends  InMemoryTaskManager {
 
         if (type == TaskType.TASK) {
             tasks.put(task.getId(), task);
-//            saveEpic();
+            if (task.getStartTime() != null) {
+                prioritizedTasks.add(task);
+            }
         } else if (type == TaskType.EPIC) {
-//            epics.put(task.getId(), (Epic) task);
+
             tasks.put(task.getId(), (Epic) task);
-//            saveEpic(task);
+
         } else if (type == TaskType.SUBTASK) {
-//            saveSubTask((SubTask) task);
+
             final int id = ((SubTask) task).getEpicId();
-//            subtasks.put(task.getId(), (SubTask) task);
             tasks.put(task.getId(), (SubTask) task);
+            if (task.getStartTime() != null) {
+                prioritizedTasks.add(task);
+            }
             Epic epic = (Epic) taskManager.getEpicById(id);
             epic.addSubtaskToEpic((SubTask) task);
         }

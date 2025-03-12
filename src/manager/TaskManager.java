@@ -8,6 +8,7 @@ import model.TaskStatus;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
     void createTask(Task Task);
@@ -19,6 +20,10 @@ public interface TaskManager {
 
     void deleteSubTaskById(Integer subTaskId);
 
+    void deleteTaskById(Integer subTaskId);
+
+    void clearTasks();
+
     void saveEpic(Task epic);
 
     void updateEpic(Epic epic);
@@ -29,9 +34,9 @@ public interface TaskManager {
 
     List<Task> getAllTask();
 
-    List<Task> getAllSubtaskTask();
+    List<SubTask> getAllSubtaskTask();
 
-    List<Task> getAllEpic();
+    List<Epic> getAllEpic();
 
     Task getSubTaskById(Integer taskId);
 
@@ -39,4 +44,8 @@ public interface TaskManager {
     Task getSingleTaskById(Integer taskId);
 
     public List<Task> getHistory();
+
+    Set<Task> getPrioritizedTasks();
+
+
 }//

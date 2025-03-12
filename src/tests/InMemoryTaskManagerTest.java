@@ -8,6 +8,8 @@ import model.TaskStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +31,7 @@ class InMemoryTaskManagerTest {
     @Test
     void shouldCheckThatInMemoryManagerAddTasksAndFindThemByById() {
 
-        Task task1 = new Task("Task1", "description1");
+        Task task1 = new Task("Task1", "description1", LocalDateTime.of(2025, 3,11,8,30), Duration.ofMinutes(20));
         inMemoryTaskManager.createTask(task1);
         Task task = inMemoryTaskManager.getTaskById(1);
         assertEquals(1, task.getId());
@@ -37,7 +39,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldSavePreviousVersionOfTaskAndData() {
-        Task task1 = new Task("Task1", "description1");
+        Task task1 = new Task("Task1", "description1", LocalDateTime.of(2025, 3,12,8,30), Duration.ofMinutes(30));
         inMemoryTaskManager.createTask(task1);
         inMemoryTaskManager.getTaskById(1);
         inMemoryTaskManager.getTaskById(1);
@@ -56,7 +58,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void AddsTasksDifferentTypesAndCanFindThemByManagerId(){
-        Task task1 = new Task("Task1", "description1");
+        Task task1 = new Task("Task1", "description1", LocalDateTime.of(2025, 3,11,8,30), Duration.ofMinutes(20));
         inMemoryTaskManager.createTask(task1);
         Task task2 = new Epic("Epic1", "description1");
         inMemoryTaskManager.saveEpic(task2);
@@ -70,9 +72,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void TasksWithGivenIdAndGeneratedDoNotConflictWithinTheManager(){
-        Task task1 = new Task(1000,"Task1","description1",  TaskStatus.NEW);
+        Task task1 = new Task(1000,"Task1","description1",  TaskStatus.NEW, LocalDateTime.of(2025, 3,11,8,30), Duration.ofMinutes(20));
         inMemoryTaskManager.updateTask(task1);
-        Task task2 = new Task("Task2", "description2");
+        Task task2 = new Task("Task2", "description2", LocalDateTime.of(2025, 3,12,8,30), Duration.ofMinutes(30));
         inMemoryTaskManager.createTask(task2);
         Assertions.assertFalse(task1.getId() == task2.getId());
 
@@ -80,13 +82,13 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldRemoveFromHistory(){
-        Task task1 = new Task("Task1", "description1");
+        Task task1 = new Task("Task1", "description1", LocalDateTime.of(2025, 3,11,8,30), Duration.ofMinutes(20));
         inMemoryTaskManager.createTask(task1);
         historyManager.add(task1);
-        Task task2 = new Task("Task2", "description2");
+        Task task2 = new Task("Task2", "description2", LocalDateTime.of(2025, 3,12,8,30), Duration.ofMinutes(23));
         inMemoryTaskManager.createTask(task2);
         historyManager.add(task2);
-        Task task3 = new Task("Task3", "description3");
+        Task task3 = new Task("Task3", "description3", LocalDateTime.of(2025, 3,13,8,30), Duration.ofMinutes(30));
         inMemoryTaskManager.createTask(task3);
         historyManager.add(task3);
 
@@ -104,5 +106,10 @@ class InMemoryTaskManagerTest {
         historyManager.remove(task3.getId());
         final List<Task> historyAfterRemoveAll = historyManager.getHistory();
         assertEquals(0, historyAfterRemoveAll.size(), "Количество элементов в истории не равно 0");
+    }
+
+    @Test
+    void historyShouldBeEmpty() {
+        assertEquals(0, historyManager.getHistory().size(), "История не пустая");
     }
 }

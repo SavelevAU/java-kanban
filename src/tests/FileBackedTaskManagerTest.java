@@ -11,10 +11,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest {
     Managers managers;
@@ -42,7 +43,7 @@ class FileBackedTaskManagerTest {
     void saveLoadFile() throws IOException, ManagerLoadException {
         File file = File.createTempFile("testEmptyFile-", ".csv");
         FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
-        Task task = new Task("Test saveLoadFile", "Test saveLoadFile description");
+        Task task = new Task("Test saveLoadFile", "Test saveLoadFile description", LocalDateTime.of(2025, 3,11,8,30), Duration.ofMinutes(20));
         taskManager.createTask(task);
         //вызовем получение задачи для обновления истории
         taskManager.getTaskById(task.getId());
@@ -53,7 +54,13 @@ class FileBackedTaskManagerTest {
         assertEquals(taskManagerFromFile.getHistory().size(), taskManagerFromFile.getHistory().size(), "Количество задач в истории менеджеров не равно");
     }
 
+    @Test
+    public void testException() {
+        assertThrows(ManagerSaveException.class, () -> {
+            FileBackedTaskManager taskManager = new FileBackedTaskManager(new File("/invalid/path/task.csv"));
+            Task task = new Task("", "Test saveLoadFile description", LocalDateTime.of(2025, 3,11,8,30), Duration.ofMinutes(20));
+            taskManager.createTask(task);
+        }, "Попытка сохранить файл должна приводить к ошибке");
+    }
 
-
-
-}
+    }
