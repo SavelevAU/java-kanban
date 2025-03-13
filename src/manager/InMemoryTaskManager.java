@@ -15,9 +15,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     private final HistoryManager historyManager;
 
-    protected int currentId;
+    private int currentId;
 
-    protected TreeSet<Task> prioritizedTasks;
+    private TreeSet<Task> prioritizedTasks;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -79,7 +79,6 @@ public class InMemoryTaskManager implements TaskManager {
 
         int epicId = subtask.getEpicId();
         Epic epic = (Epic) tasks.get(epicId);
-//        Epic epic = (Epic) epics.get(epicId);
         List<SubTask> list = epic.getSubTasks();
 
         list.add(subtask);
@@ -95,6 +94,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         tasks.put(subtask.getId(), subtask);
         if (subtask.getStartTime() != null) {
+            prioritizedTasks.remove(subtask);
             prioritizedTasks.add(subtask);
         }
         int epicId = subtask.getEpicId();
@@ -213,8 +213,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task Task) {
-
+        if (Task.getStartTime() != null && isTaskIntersection(Task)) {
+            return;
+        }
         tasks.put(Task.getId(), Task);
+        if (Task.getStartTime() != null) {
+            prioritizedTasks.remove(Task); // Удаляем старую версию задачи из отсортированного списка
+            prioritizedTasks.add(Task);   // Добавляем обновленную версию
+        }
     }//
 
     @Override

@@ -7,10 +7,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.TreeSet;
 
 
 public class FileBackedTaskManager extends  InMemoryTaskManager {
     private final File file;
+    private int currentId;
+    private TreeSet<Task> prioritizedTasks;
 
     public FileBackedTaskManager(File file) {
         this.file = file;
@@ -92,8 +95,8 @@ public class FileBackedTaskManager extends  InMemoryTaskManager {
             String contents = Files.readString(file.toPath());
             String[] blocks = contents.split("\n\n");
 
-                String[] valuesOfTasks = blocks[0].split("\n");
-                loadTasks(taskManager, valuesOfTasks);
+            String[] valuesOfTasks = blocks[0].split("\n");
+            loadTasks(taskManager, valuesOfTasks);
             if (blocks.length == 2) {
                 String[] valuesOfHistory = blocks[1].split(",");
                 loadHistory(taskManager, valuesOfHistory);
@@ -142,6 +145,7 @@ public class FileBackedTaskManager extends  InMemoryTaskManager {
             epic.addSubtaskToEpic((SubTask) task);
         }
     }
+
     private static void loadHistory(FileBackedTaskManager taskManager, String[] valuesOfHistory) {
         //очищаем историю
         HistoryManager historyManager = Managers.getDefaultHistory();

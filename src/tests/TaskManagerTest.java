@@ -113,7 +113,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
         historyManager.remove(task3.getId());
         assertEquals(0, historyManager.getHistory().size(), "Количество элементов в истории не равно 0");
     }
-
     @Test
     void shouldLoadAndSaveFromFile() throws IOException, ManagerLoadException {
         File file = File.createTempFile("test-", ".csv");
@@ -136,6 +135,31 @@ abstract class TaskManagerTest<T extends TaskManager> {
             Task task = new Task("Task1", "Description1", LocalDateTime.of(2025, 3, 11, 8, 30), Duration.ofMinutes(20));
             taskManager.createTask(task);
         }, "Попытка сохранить файл должна приводить к ошибке");
+    }
+    @Test
+    void shouldThrowExceptionWhenCreatingTaskWithTimeIntersection() {
+        Task task1 = new Task("Task1", "Description1", LocalDateTime.of(2025, 3, 11, 8, 30), Duration.ofMinutes(60));
+        inMemoryTaskManager.createTask(task1);
+
+        Task task2 = new Task("Task2", "Description2", LocalDateTime.of(2025, 3, 11, 9, 0), Duration.ofMinutes(60));
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            inMemoryTaskManager.createTask(task2);
+        }, "Создание задачи с пересекающимся временем должно вызывать исключение");
+    }
+    @Test
+    void shouldThrowExceptionWhenUpdatingTaskWithTimeIntersection() {
+        Task task1 = new Task("Task1", "Description1", LocalDateTime.of(2025, 3, 11, 8, 30), Duration.ofMinutes(60));
+        inMemoryTaskManager.createTask(task1);
+
+        Task task2 = new Task("Task2", "Description2", LocalDateTime.of(2025, 3, 11, 10, 0), Duration.ofMinutes(60));
+        inMemoryTaskManager.createTask(task2);
+
+        task2.setStartTime(LocalDateTime.of(2025, 3, 11, 9, 0));
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            inMemoryTaskManager.updateTask(task2);
+        }, "Обновление задачи с пересекающимся временем должно вызывать исключение");
     }
 }
 

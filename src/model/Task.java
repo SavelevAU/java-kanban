@@ -11,7 +11,7 @@ public class Task {
     protected TaskStatus taskStatus;
     protected TaskType taskType;
     protected int Id;
-    private Duration duration = Duration.ofMinutes(0);
+    protected Duration duration = Duration.ofMinutes(0);
     protected LocalDateTime startTime;
 
     public Task(String taskName, String description, LocalDateTime startTime, Duration duration) {
@@ -21,6 +21,15 @@ public class Task {
         this.taskType = TaskType.TASK;
         this.duration = duration;
         this.startTime = startTime;
+    }
+
+    public Task(String taskName, String description) {
+        this.taskName = taskName;
+        this.description = description;
+        this.taskStatus = TaskStatus.NEW;
+        this.taskType = TaskType.TASK;
+        this.duration = Duration.ofMinutes(5);
+        this.startTime = LocalDateTime.now();
     }
 
     public Task(String taskName, String description, int id, LocalDateTime startTime, Duration duration) {
@@ -47,17 +56,12 @@ public class Task {
         return Id;
     }
 
-    Task(String name, String description) {
-        this.taskName = taskName;
-        this.description = description;
-        this.duration = Duration.ofMinutes(0);
-    }
-
-    Task(String name, String description, int id) {
+    Task(String taskName, String description, int id) {
         this.taskName = taskName;
         this.description = description;
         this.Id = id;
-        this.duration = Duration.ofMinutes(0);
+        this.duration = Duration.ofMinutes(5);
+        this.startTime = LocalDateTime.now();
     }
 
     @Override
@@ -135,8 +139,5 @@ public class Task {
         this.startTime = startTime;
     }
 
- //   @Override
- //   public int compareTo(Task o) {
- //       return this.startTime.compareTo(o.startTime);
- //   }
+
 }

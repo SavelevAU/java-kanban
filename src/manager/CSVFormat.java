@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class CSVFormat {
-    static String toString(Task task) {
+    public static String toString(Task task) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         String startTime = "";
         if (task.getStartTime() != null) {
@@ -21,7 +21,7 @@ public class CSVFormat {
         return taskString;
     }
 
-    static Task taskFromString(String value, TaskManager taskManager) throws ManagerLoadException {
+    public static Task taskFromString(String value, TaskManager taskManager) throws ManagerLoadException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         final String[] values = value.split(",");
         if (values.length < 7) {
