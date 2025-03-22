@@ -1,10 +1,12 @@
+package tests;
+
 import com.google.gson.*;
-import manager.InMemoryTaskManager;
-import manager.TaskManager;
+import manager.*;
 import model.Task;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
+import manager.HttpTaskServer;
 
 import java.io.IOException;
 import java.net.URI;
@@ -21,7 +23,7 @@ public class HttpTaskManagerHistoryTest {
 
     // создаём экземпляр InMemoryTaskManager
     TaskManager manager = new InMemoryTaskManager();
-    // передаём его в качестве аргумента в конструктор HttpTaskServer
+    // передаём его в качестве аргумента в конструктор manager.HttpTaskServer
     HttpTaskServer taskServer = new HttpTaskServer(manager);
     Gson gson = HttpTaskServer.getGson();
 

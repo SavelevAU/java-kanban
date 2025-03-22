@@ -1,9 +1,10 @@
-package Handler;
+package handler;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import manager.TaskManager;
+import model.SubTask;
 import model.Task;
 
 import java.io.IOException;
@@ -11,28 +12,27 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class TaskHandler extends BaseHttpHandler implements HttpHandler {
+public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager taskManager;
     private final Gson gson;
 
-    public TaskHandler(TaskManager taskManager, Gson gson) {
+    public SubtaskHandler(TaskManager taskManager, Gson gson) {
         this.taskManager = taskManager;
         this.gson = gson;
     }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-
         String requestMethod = exchange.getRequestMethod();
         String requestPath = exchange.getRequestURI().getPath();
         String[] pathParts = requestPath.split("/");
-        if (requestMethod.equals("GET") && pathParts.length == 2 && pathParts[1].equals("tasks")) {
+        if (requestMethod.equals("GET") && pathParts.length == 2 && pathParts[1].equals("subtasks")) {
             getTasksHandle(exchange, gson);
-        } else if (requestMethod.equals("GET") && pathParts.length == 3 && pathParts[1].equals("tasks")) {
+        } else if (requestMethod.equals("GET") && pathParts.length == 3 && pathParts[1].equals("subtasks")) {
             getTaskHandle(exchange, gson, pathParts);
-        } else if (requestMethod.equals("POST") && pathParts.length == 2 && pathParts[1].equals("tasks")) {
+        } else if (requestMethod.equals("POST") && pathParts.length == 2 && pathParts[1].equals("subtasks")) {
             postTaskHandle(exchange, gson);
-        } else if (requestMethod.equals("DELETE") && pathParts.length == 3 && pathParts[1].equals("tasks")) {
+        } else if (requestMethod.equals("DELETE") && pathParts.length == 3 && pathParts[1].equals("subtasks")) {
             deleteTaskHandle(exchange, pathParts);
         } else {
             sendNotFound(exchange, "Метод не найден");
@@ -41,7 +41,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
     private void getTasksHandle(HttpExchange exchange, Gson gson) throws IOException {
         try {
-            List<Task> tasks = taskManager.getAllTask();
+            List<SubTask> tasks = taskManager.getAllSubtaskTask();
             String text = gson.toJson(tasks);
             sendText(exchange, text);
         } catch (Exception exp) {
@@ -52,10 +52,10 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
     private void getTaskHandle(HttpExchange exchange, Gson gson, String[] pathParts) throws IOException {
         try {
             int id = Integer.parseInt(pathParts[2]);
-            Task task = taskManager.getTaskById(id);
+            SubTask task = (SubTask) taskManager.getSubTaskById(id);
             sendText(exchange, gson.toJson(task));
         } catch (Exception e) {
-            sendNotFound(exchange, "Задача с айди " + pathParts[2] + " не найдена");
+            sendNotFound(exchange, "Подзадача с айди " + pathParts[2] + " не найдена");
         }
     }
 
@@ -63,7 +63,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         try {
             InputStream bodyInputStream = exchange.getRequestBody();
             String body = new String(bodyInputStream.readAllBytes(), StandardCharsets.UTF_8);
-            Task taskDeserialized = gson.fromJson(body, Task.class);
+            SubTask taskDeserialized = gson.fromJson(body, SubTask.class);
             if (taskDeserialized == null) {
                 sendNotFound(exchange, "Не удалось преобразовать тело запроса в задачу!");
                 return;
@@ -73,13 +73,19 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                 return;
             }
             if (taskDeserialized.getId() == 0) {
-                taskManager.createTask(taskDeserialized);
-                sendSuccessWithoutBody(exchange);
+                taskManager.createSubTask(taskDeserialized);
+                Task task = taskManager.getTaskById(taskDeserialized.getId());
+                int id = task.getId();
+                if (id == 0) {
+                    sendNotFound(exchange, "Не удалось создать задачу, возможно неверно заполнено поле epicId");
+                } else {
+                    sendSuccessWithoutBody(exchange);
+                }
             } else {
-                if (taskManager.getTaskById(taskDeserialized.getId()) == null) {
+                if (taskManager.getSubTaskById(taskDeserialized.getId()) == null) {
                     sendNotFound(exchange, "Не найдена задача с айди " + taskDeserialized.getId());
                 } else {
-                    taskManager.updateTask(taskDeserialized);
+                    taskManager.updateSubTask(taskDeserialized);
                     sendSuccessWithoutBody(exchange);
                 }
             }
@@ -91,11 +97,11 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
     private void deleteTaskHandle(HttpExchange exchange, String[] pathParts) throws IOException {
         try {
             int id = Integer.parseInt(pathParts[2]);
-            Task task = taskManager.getTaskById(id);
-            taskManager.deleteTaskById(task.getId());
-            sendText(exchange, "Задача успешно удалена");
+            SubTask task = (SubTask) taskManager.getSubTaskById(id);
+            taskManager.deleteSubTaskById(task.getId());
+            sendText(exchange, "Подзадача успешно удалена");
         } catch (Exception e) {
-            sendNotFound(exchange, "Задача с айди " + pathParts[2] + " не найдена");
+            sendNotFound(exchange, "Подзадача с айди " + pathParts[2] + " не найдена");
         }
     }
 }

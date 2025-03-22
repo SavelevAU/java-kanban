@@ -1,8 +1,10 @@
+package tests;
+
 import com.google.gson.*;
+import manager.HttpTaskServer;
 import manager.InMemoryTaskManager;
+import manager.TaskListTypeToken;
 import manager.TaskManager;
-import model.Epic;
-import model.SubTask;
 import model.Task;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,16 +21,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HttpTaskManagerSubtasksTest {
+public class HttpTaskManagerTasksTest {
 
     // создаём экземпляр InMemoryTaskManager
     TaskManager manager = new InMemoryTaskManager();
-    // передаём его в качестве аргумента в конструктор HttpTaskServer
+    // передаём его в качестве аргумента в конструктор manager.HttpTaskServer
     HttpTaskServer taskServer = new HttpTaskServer(manager);
     Gson gson = HttpTaskServer.getGson();
-    Epic epic = new Epic("Epic 1", "Test description");
 
-    public HttpTaskManagerSubtasksTest() throws IOException {
+    public HttpTaskManagerTasksTest() throws IOException {
     }
 
     @BeforeEach
@@ -45,20 +46,17 @@ public class HttpTaskManagerSubtasksTest {
     }
 
     @Test
-    public void testAddSubtask() throws IOException, InterruptedException, NotFoundException {
-
-        manager.createEpic(epic);
-        final int epicId = epic.getId();
+    public void testAddTask() throws IOException, InterruptedException {
         // создаём задачу
-        SubTask task = new SubTask("Test 2", "Testing task 2",
-                epicId, LocalDateTime.now(), Duration.ofMinutes(5));
-        manager.saveSubTask(task);
+        Task task = new Task("Test 2", "Testing task 2",
+                LocalDateTime.now(), Duration.ofMinutes(5));
+        manager.createTask(task);
         // конвертируем её в JSON
         String taskJson = gson.toJson(task);
 
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/subtasks");
+        URI url = URI.create("http://localhost:8080/tasks");
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
 
         // вызываем рест, отвечающий за создание задач
@@ -67,7 +65,7 @@ public class HttpTaskManagerSubtasksTest {
         assertEquals(201, response.statusCode());
 
         // проверяем, что создалась одна задача с корректным именем
-        List<SubTask> tasksFromManager = manager.getAllSubtaskTask();
+        List<Task> tasksFromManager = manager.getAllTask();
 
         assertNotNull(tasksFromManager, "Задачи не возвращаются");
         assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
@@ -75,17 +73,15 @@ public class HttpTaskManagerSubtasksTest {
     }
 
     @Test
-    public void testGetTasks() throws IOException, InterruptedException, NotFoundException {
-        manager.createEpic(epic);
-        final int epicId = epic.getId();
+    public void testGetTasks() throws IOException, InterruptedException {
         // создаём задачу
-        SubTask task = new SubTask("Test 2", "Testing task 2",
-                epicId, LocalDateTime.now(), Duration.ofMinutes(5));
-        manager.saveSubTask(task);
+        Task task = new Task("Test 2", "Testing task 2",
+                LocalDateTime.now(), Duration.ofMinutes(5));
+        manager.createTask(task);
 
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/subtasks");
+        URI url = URI.create("http://localhost:8080/tasks");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
 
         // вызываем рест, отвечающий за получение задач
@@ -105,18 +101,16 @@ public class HttpTaskManagerSubtasksTest {
     }
 
     @Test
-    public void testGetTaskById() throws IOException, InterruptedException, NotFoundException {
-        manager.createEpic(epic);
-        final int epicId = epic.getId();
-        // создаём задачу
-        SubTask task = new SubTask("Test 2", "Testing task 2",
-                epicId, LocalDateTime.now(), Duration.ofMinutes(5));
-        manager.saveSubTask(task);
-        final int taskId = task.getId();
+    public void testGetTaskById() throws IOException, InterruptedException {
 
+        // создаём задачу
+        Task task = new Task("Test 2", "Testing task 2",
+                LocalDateTime.now(), Duration.ofMinutes(5));
+        manager.createTask(task);
+        final int taskId = task.getId();
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/subtasks/" + taskId);
+        URI url = URI.create("http://localhost:8080/tasks/" + taskId);
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -126,7 +120,7 @@ public class HttpTaskManagerSubtasksTest {
         JsonElement jsonElement = JsonParser.parseString(response.body());
         assertTrue(jsonElement.isJsonObject(),"Ответ от сервера не соответствует ожидаемому.");
         JsonObject jsonObject = jsonElement.getAsJsonObject();
-        Task responseTask = gson.fromJson(jsonObject, SubTask.class);
+        Task responseTask = gson.fromJson(jsonObject, Task.class);
 
         //проверяем, что вернулась одна задача с корректным именем
         assertNotNull(responseTask, "Задача не возвращается");
@@ -134,24 +128,22 @@ public class HttpTaskManagerSubtasksTest {
     }
 
     @Test
-    public void deleteTaskById() throws IOException, InterruptedException, NotFoundException {
-        manager.createEpic(epic);
-        final int epicId = epic.getId();
-        // создаём задачу
-        SubTask task = new SubTask("Test 2", "Testing task 2",
-                epicId, LocalDateTime.now(), Duration.ofMinutes(5));
-        manager.saveSubTask(task);
-        final int taskId = task.getId();
+    public void deleteTaskById() throws IOException, InterruptedException {
 
+        // создаём задачу
+        Task task = new Task("Test 2", "Testing task 2",
+                LocalDateTime.now(), Duration.ofMinutes(5));
+        manager.createTask(task);
+        final int taskId = task.getId();
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/subtasks/" + taskId);
+        URI url = URI.create("http://localhost:8080/tasks/" + taskId);
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         // проверяем код ответа
         assertEquals(200, response.statusCode());
 
-        assertEquals(0, manager.getAllSubtaskTask().size(), "Задача не удаляется");
+        assertEquals(0, manager.getAllTask().size(), "Задача не удаляется");
     }
 }

@@ -12,8 +12,7 @@ import java.util.TreeSet;
 
 public class FileBackedTaskManager extends  InMemoryTaskManager {
     private final File file;
-    private int currentId;
-    private TreeSet<Task> prioritizedTasks;
+
 
     public FileBackedTaskManager(File file) {
         this.file = file;

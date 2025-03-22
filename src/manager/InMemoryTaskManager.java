@@ -2,6 +2,8 @@ package manager;
 
 import model.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -15,9 +17,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     private final HistoryManager historyManager;
 
-    private int currentId;
+    int currentId;
 
-    private TreeSet<Task> prioritizedTasks;
+    public TreeSet<Task> prioritizedTasks;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -43,7 +45,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task Task) {
-        if (Task.getStartTime() != null && isTaskIntersection(Task)) {
+        if (Task.getStartTime() == null) {
+            Task.setStartTime(LocalDateTime.now());
+        }
+        if (Task.getDuration() == null) {
+            Task.setDuration(Duration.ofMinutes(5));
+        }
+        if (isTaskIntersection(Task)) {
             return;
         }
         Task.setId(taskIdGenerator.getNewId());
@@ -54,7 +62,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public void createSubTask(Task Task) {
-        if (Task.getStartTime() != null && isTaskIntersection(Task)) {
+        if (Task.getStartTime() == null) {
+            Task.setStartTime(LocalDateTime.now());
+        }
+        if (Task.getDuration() == null) {
+            Task.setDuration(Duration.ofMinutes(5));
+        }
+        if (isTaskIntersection(Task)) {
             return;
         }
         Task.setId(taskIdGenerator.getNewId());
@@ -65,7 +79,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public void createEpic(Task Task) {
-        if (Task.getStartTime() != null && isTaskIntersection(Task)) {
+        if (Task.getStartTime() == null) {
+            Task.setStartTime(LocalDateTime.now());
+        }
+        if (Task.getDuration() == null) {
+            Task.setDuration(Duration.ofMinutes(5));
+        }
+        if (isTaskIntersection(Task)) {
             return;
         }
         Task.setId(taskIdGenerator.getNewId());
@@ -111,7 +131,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubTask(SubTask subtask) {
-        if (subtask.getStartTime() != null && isTaskIntersection(subtask)) {
+        if (subtask.getStartTime() == null) {
+            subtask.setStartTime(LocalDateTime.now());
+        }
+        if (subtask.getDuration() == null) {
+            subtask.setDuration(Duration.ofMinutes(5));
+        }
+        if (isTaskIntersection(subtask)) {
             return;
         }
         tasks.put(subtask.getId(), subtask);
@@ -199,7 +225,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void saveEpic(Task epic) {
         epic.setId(taskIdGenerator.getNewId());
-        tasks.put(epic.getId(), epic);
+        epics.put(epic.getId(), (Epic) epic);
     }
 
     @Override

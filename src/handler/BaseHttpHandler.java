@@ -1,4 +1,4 @@
-package Handler;
+package handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;

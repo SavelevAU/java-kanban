@@ -3,7 +3,6 @@ package manager;
 import java.io.File;
 
 public class Managers {
-    public static HistoryManager getDefaultHistory;
 
     public static TaskManager getDefault() {
 

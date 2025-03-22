@@ -1,8 +1,14 @@
+package tests;
+
 import com.google.gson.*;
+import manager.HttpTaskServer;
+import manager.TaskListTypeToken;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
+
+import model.Epic;
+import model.SubTask;
 import model.Task;
-import model.TaskStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
@@ -18,22 +24,22 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HttpTaskManagerTasksTest {
+public class HttpTaskManagerEpicsTest {
 
     // создаём экземпляр InMemoryTaskManager
     TaskManager manager = new InMemoryTaskManager();
-    // передаём его в качестве аргумента в конструктор HttpTaskServer
+    // передаём его в качестве аргумента в конструктор manager.HttpTaskServer
     HttpTaskServer taskServer = new HttpTaskServer(manager);
     Gson gson = HttpTaskServer.getGson();
 
-    public HttpTaskManagerTasksTest() throws IOException {
+    public HttpTaskManagerEpicsTest() throws IOException {
     }
 
     @BeforeEach
     public void setUp() {
         manager.clearTasks();
-        manager.clearSubTasks();
         manager.clearEpics();
+        manager.clearSubTasks();
         taskServer.start();
     }
 
@@ -43,16 +49,16 @@ public class HttpTaskManagerTasksTest {
     }
 
     @Test
-    public void testAddTask() throws IOException, InterruptedException {
+    public void testAddEpic() throws IOException, InterruptedException {
         // создаём задачу
-        Task task = new Task("Test 2", "Testing task 2",
-                LocalDateTime.now(), Duration.ofMinutes(5));
+        Epic task = new Epic("Test 2", "Testing task 2");
+        manager.createEpic(task);
         // конвертируем её в JSON
         String taskJson = gson.toJson(task);
 
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks");
+        URI url = URI.create("http://localhost:8080/epics");
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
 
         // вызываем рест, отвечающий за создание задач
@@ -61,7 +67,7 @@ public class HttpTaskManagerTasksTest {
         assertEquals(201, response.statusCode());
 
         // проверяем, что создалась одна задача с корректным именем
-        List<Task> tasksFromManager = manager.getAllTask();
+        List<Epic> tasksFromManager = manager.getAllEpic();
 
         assertNotNull(tasksFromManager, "Задачи не возвращаются");
         assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
@@ -69,15 +75,14 @@ public class HttpTaskManagerTasksTest {
     }
 
     @Test
-    public void testGetTasks() throws IOException, InterruptedException {
+    public void testGetEpics() throws IOException, InterruptedException {
         // создаём задачу
-        Task task = new Task("Test 2", "Testing task 2",
-                LocalDateTime.now(), Duration.ofMinutes(5));
-        manager.createTask(task);
+         Epic task = new Epic("Test 2", "Testing task 2");
+        manager.createEpic(task);
 
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks");
+        URI url = URI.create("http://localhost:8080/epics");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
 
         // вызываем рест, отвечающий за получение задач
@@ -92,21 +97,21 @@ public class HttpTaskManagerTasksTest {
 
         //проверяем, что вернулась одна задача с корректным именем
         assertNotNull(tasks, "Задачи не возвращаются");
-        assertEquals(1, tasks.size(), "Некорректное количество задач");
+         assertEquals(1, tasks.size(), "Некорректное количество задач");
         assertEquals("Test 2", tasks.get(0).getTaskName(), "Некорректное имя задачи");
     }
 
     @Test
-    public void testGetTaskById() throws IOException, InterruptedException {
+    public void testGetEpicById() throws IOException, InterruptedException {
 
         // создаём задачу
-        Task task = new Task("Test 2", "Testing task 2",
-                LocalDateTime.now(), Duration.ofMinutes(5));
-        manager.createTask(task);
+        Epic task = new Epic("Test 2", "Testing task 2");
+        manager.createEpic(task);
         final int taskId = task.getId();
-        // создаём HTTP-клиент и запрос
+
+                // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks/" + taskId);
+        URI url = URI.create("http://localhost:8080/epics/" + taskId);
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -116,7 +121,7 @@ public class HttpTaskManagerTasksTest {
         JsonElement jsonElement = JsonParser.parseString(response.body());
         assertTrue(jsonElement.isJsonObject(),"Ответ от сервера не соответствует ожидаемому.");
         JsonObject jsonObject = jsonElement.getAsJsonObject();
-        Task responseTask = gson.fromJson(jsonObject, Task.class);
+        Epic responseTask = gson.fromJson(jsonObject, Epic.class);
 
         //проверяем, что вернулась одна задача с корректным именем
         assertNotNull(responseTask, "Задача не возвращается");
@@ -124,22 +129,54 @@ public class HttpTaskManagerTasksTest {
     }
 
     @Test
-    public void deleteTaskById() throws IOException, InterruptedException {
+    public void deleteEpicById() throws IOException, InterruptedException {
 
         // создаём задачу
-        Task task = new Task("Test 2", "Testing task 2",
-                LocalDateTime.now(), Duration.ofMinutes(5));
-        manager.createTask(task);
+        Epic task = new Epic("Test 2", "Testing task 2");
+        manager.createEpic(task);
         final int taskId = task.getId();
+
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks/" + taskId);
+        URI url = URI.create("http://localhost:8080/epics/" + taskId);
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         // проверяем код ответа
         assertEquals(200, response.statusCode());
+        assertEquals(0, manager.getAllEpic().size(), "Задача не удаляется");
+    }
 
-        assertEquals(0, manager.getAllTask().size(), "Задача не удаляется");
+    @Test
+    public void testGetEpicsSubtask() throws IOException, InterruptedException {
+
+        // создаём задачу
+        Epic task = new Epic("Test 2", "Testing task 2");
+        manager.createEpic(task);
+        final int taskId = task.getId();
+
+        SubTask subtask = new SubTask("Test 3", "Testing subtask", manager.getEpicById(taskId).getId(), LocalDateTime.now(), Duration.ofMinutes(5));
+        manager.saveSubTask(subtask);
+
+
+
+        // создаём HTTP-клиент и запрос
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/epics/" + taskId + "/subtasks/");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        // проверяем код ответа
+        assertEquals(200, response.statusCode());
+
+        JsonElement jsonElement = JsonParser.parseString(response.body());
+        assertTrue(jsonElement.isJsonArray(),"Ответ от сервера не соответствует ожидаемому.");
+        JsonArray jsonArray = jsonElement.getAsJsonArray();
+        List<Task> tasks = gson.fromJson(jsonArray, new TaskListTypeToken().getType());
+
+        //проверяем, что вернулась одна задача с корректным именем
+        assertNotNull(tasks, "Задачи не возвращаются");
+        assertEquals(1, tasks.size(), "Некорректное количество задач");
+        assertEquals("Test 3", tasks.get(0).getTaskName(), "Некорректное имя задачи");
     }
 }
