@@ -10,7 +10,8 @@ import java.io.File;
 
 public class Main {
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
+public static void makeCustomScript() throws NotFoundException {
         System.out.println("Поехали!");
         TaskManager inMemoryTaskManager = Managers.getDefault();
         TaskManager inMemoryTaskManagerfromfile = Managers.getDefaultFormFile();

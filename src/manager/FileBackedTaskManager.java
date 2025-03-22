@@ -25,6 +25,16 @@ public class FileBackedTaskManager extends  InMemoryTaskManager {
         save();
     }
 
+    public void createSubTask(Task Task) {
+        super.createSubTask(Task);
+        save();
+    }
+
+    public void createEpic(Task Task) {
+        super.createEpic(Task);
+        save();
+    }
+
     @Override
     public void saveSubTask(SubTask subtask) {
         super.saveSubTask(subtask);
@@ -183,4 +193,8 @@ public class FileBackedTaskManager extends  InMemoryTaskManager {
     }
 
 
+    @Override
+    public boolean isTaskIntersection(Task task) {
+        return super.isTaskIntersection(task);
+    }
 }

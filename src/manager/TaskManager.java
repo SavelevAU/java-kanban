@@ -12,6 +12,8 @@ import java.util.Set;
 
 public interface TaskManager {
     void createTask(Task Task);
+    void createSubTask(Task Task);
+    void createEpic(Task Task);
 
     void saveSubTask(SubTask subtask);
 
@@ -22,7 +24,11 @@ public interface TaskManager {
 
     void deleteTaskById(Integer subTaskId);
 
+    void deleteEpicById(Integer epicId);
+
     void clearTasks();
+    void clearSubTasks();
+    void clearEpics();
 
     void saveEpic(Task epic);
 
@@ -47,5 +53,5 @@ public interface TaskManager {
 
     Set<Task> getPrioritizedTasks();
 
-
+    boolean isTaskIntersection(Task task);
 }//
