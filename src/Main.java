@@ -1,19 +1,21 @@
-import manager.Managers;
-import manager.InMemoryTaskManager;
-import manager.TaskManager;
+import manager.*;
 import model.Epic;
 import model.Task;
 import model.SubTask;
 import model.TaskStatus;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Main {
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
+public static void makeCustomScript() throws NotFoundException {
         System.out.println("Поехали!");
         TaskManager inMemoryTaskManager = Managers.getDefault();
+        TaskManager inMemoryTaskManagerfromfile = Managers.getDefaultFormFile();
 
-        Task task1 = new Task("Task1", "description1");
-        Task task2 = new Task("Task2", "description2");
+        Task task1 = new Task("Task1", "description1", LocalDateTime.of(2025, 3,11,8,30), Duration.ofMinutes(20));
+        Task task2 = new Task("Task2", "description2", LocalDateTime.of(2025, 3,12,8,30), Duration.ofMinutes(30));
 
         inMemoryTaskManager.createTask(task1);
         inMemoryTaskManager.createTask(task2);
@@ -25,9 +27,9 @@ public class Main {
         inMemoryTaskManager.saveEpic(epic2);
 
 
-        SubTask subTask1 = new SubTask("SubTask1", "des1", 3);
-        SubTask subTask2 = new SubTask("SubTask2", "des2", 3);
-        SubTask subTask3 = new SubTask("SubTask3", "des3", 4);
+        SubTask subTask1 = new SubTask("SubTask1", "des1", 3 , LocalDateTime.of(2025, 3,11,9,30), Duration.ofMinutes(20));
+        SubTask subTask2 = new SubTask("SubTask2", "des2", 3, LocalDateTime.of(2025, 3,11,10,30), Duration.ofMinutes(20));
+        SubTask subTask3 = new SubTask("SubTask3", "des3", 4, LocalDateTime.of(2025, 3,11,11,30), Duration.ofMinutes(20));
 
         inMemoryTaskManager.saveSubTask(subTask1);
         inMemoryTaskManager.saveSubTask(subTask2);
@@ -41,7 +43,7 @@ public class Main {
         task1.setTaskStatus(TaskStatus.DONE);
 
         subTask1.setTaskStatus(TaskStatus.DONE);
-        inMemoryTaskManager.updatesubtask(subTask1);
+        inMemoryTaskManager.updateSubTask(subTask1);
 
         System.out.println("Обновили ЭПИК после обновления подзадачи:");
 
@@ -59,12 +61,16 @@ public class Main {
         printAllTasks((InMemoryTaskManager) inMemoryTaskManager);
 
         for (int i = 1; i < 20; i++) {
-            inMemoryTaskManager.createTask(new Task("name" + i, "desc" + i));
+            inMemoryTaskManager.createTask(new Task("name" + i, "desc" + i,LocalDateTime.of(2025, 3,i,i,i), Duration.ofMinutes(i)));
         }
         for (int i = 5; i < 18; i++) {
             inMemoryTaskManager.getTaskById(i);
         }
         var e = inMemoryTaskManager.getHistory();
+
+
+
+
     }
     private static void printAllTasks(InMemoryTaskManager manager) {
 

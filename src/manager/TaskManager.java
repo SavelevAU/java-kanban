@@ -8,45 +8,31 @@ import model.TaskStatus;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
     void createTask(Task Task);
+    void createSubTask(Task Task);
+    void createEpic(Epic Task);
 
     void saveSubTask(SubTask subtask);
 
-    void updatesubtask(SubTask subtask);
+    void updateSubTask(SubTask subtask);
 
-    default void calculateEpicStatus(Epic epic) {
-
-        List<TaskStatus> statuses = new ArrayList<>();
-
-        for (SubTask task : epic.getSubTasks()) {
-            statuses.add(task.getTaskStatus());
-        }
-
-        if (statuses.isEmpty()) {
-            epic.setTaskStatus(TaskStatus.NEW);
-        }
-
-
-        if (statuses.contains(TaskStatus.NEW) &&
-                !statuses.contains(TaskStatus.IN_PROGRESS) && !statuses.contains(TaskStatus.DONE)) {
-            epic.setTaskStatus(TaskStatus.NEW);
-        } else if (statuses.contains(TaskStatus.DONE) &&
-                !statuses.contains(TaskStatus.NEW) && !statuses.contains(TaskStatus.IN_PROGRESS)) {
-            epic.setTaskStatus(TaskStatus.DONE);
-        } else {
-            epic.setTaskStatus(TaskStatus.IN_PROGRESS);
-        }
-
-        updateepic(epic);
-    }
 
     void deleteSubTaskById(Integer subTaskId);
 
+    void deleteTaskById(Integer subTaskId);
+
+    void deleteEpicById(Integer epicId);
+
+    void clearTasks();
+    void clearSubTasks();
+    void clearEpics();
+
     void saveEpic(Task epic);
 
-    void updateepic(Epic epic);
+    void updateEpic(Epic epic);
 
     Task getEpicById(Integer epicId);
 
@@ -54,18 +40,18 @@ public interface TaskManager {
 
     List<Task> getAllTask();
 
-    List<Task> getAllSubtaskTask();
+    List<SubTask> getAllSubtaskTask();
 
-    List<Task> getAllEpic();
+    List<Epic> getAllEpic();
 
     Task getSubTaskById(Integer taskId);
 
-    @Override
-    String toString();
+    void updateTask(Task Task);
+    Task getSingleTaskById(Integer taskId);
 
-    public void saveTask(Task Task);
-    public void updateTask(Task Task);
-    public Task getSingleTaskById(Integer taskId);
+    public List<Task> getHistory();
 
-       public List<Task> getHistory();;
+    Set<Task> getPrioritizedTasks();
+
+    boolean isTaskIntersection(Task task);
 }//
