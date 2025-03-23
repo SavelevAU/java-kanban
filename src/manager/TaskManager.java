@@ -13,7 +13,7 @@ import java.util.Set;
 public interface TaskManager {
     void createTask(Task Task);
     void createSubTask(Task Task);
-    void createEpic(Task Task);
+    void createEpic(Epic Task);
 
     void saveSubTask(SubTask subtask);
 

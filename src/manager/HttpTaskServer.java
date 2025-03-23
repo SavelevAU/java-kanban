@@ -38,6 +38,8 @@ public class HttpTaskServer {
     }
 
     public static void main(String[] args) throws IOException {
+        HttpTaskServer httpTaskServer = new HttpTaskServer(Managers.getDefault());
+        httpTaskServer.start();
     }
 
     public void start() {

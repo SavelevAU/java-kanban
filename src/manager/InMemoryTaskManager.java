@@ -17,9 +17,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     private final HistoryManager historyManager;
 
-    int currentId;
+    protected int currentId;
 
-    public TreeSet<Task> prioritizedTasks;
+    protected TreeSet<Task> prioritizedTasks;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -78,7 +78,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public void createEpic(Task Task) {
+    public void createEpic(Epic Task) {
         if (Task.getStartTime() == null) {
             Task.setStartTime(LocalDateTime.now());
         }
@@ -89,7 +89,7 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         Task.setId(taskIdGenerator.getNewId());
-        epics.put(Task.getId(), (Epic) Task);
+        epics.put(Task.getId(), Task);
         if (Task.getStartTime() != null) {
              prioritizedTasks.add(Task);
         }
@@ -137,7 +137,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtask.getDuration() == null) {
             subtask.setDuration(Duration.ofMinutes(5));
         }
-        if (isTaskIntersection(subtask)) {
+       if (isTaskIntersection(subtask)) {
             return;
         }
         tasks.put(subtask.getId(), subtask);
